@@ -2,7 +2,8 @@
 #include <vector>
 #include <algorithm>
 using namespace std;
-
+// Shortest Remaining Time First (SRTF) Scheduling Algorithm
+// https://www.geeksforgeeks.org/dsa/shortest-remaining-time-first-preemptive-sjf-scheduling-algorithm/
 struct Process {
     int id, arrivalTime, burstTime, remainingTime, waitingTime, turnaroundTime, completionTime;
 };
