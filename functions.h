@@ -3,5 +3,5 @@
 #define FUNCTIONS_H
 
 void srtfunc();
-
+void sjffunc();
 #endif

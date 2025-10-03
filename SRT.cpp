@@ -7,8 +7,10 @@ using namespace std;
 struct Process {
     int id, arrivalTime, burstTime, remainingTime, waitingTime, turnaroundTime, completionTime;
 };
-
 void srtfunc() {
+    cout << "\n\nShortest Remaining Time (SRT)\n";
+    vector<int> gantt;
+
     int n = 5, currentTime = 0, completed = 0;
 
     vector<Process> p(n);
@@ -35,6 +37,7 @@ void srtfunc() {
         }
         if (idx != -1) {
             p[idx].remainingTime--;
+            gantt.push_back(p[idx].id); // record which process ran
             currentTime++;
             if (p[idx].remainingTime == 0) {
                 p[idx].completionTime = currentTime;
@@ -44,6 +47,7 @@ void srtfunc() {
             }
         }
         else {
+            gantt.push_back(0); // 0 means cpu is idle
             currentTime++;
         }
     }
@@ -57,45 +61,22 @@ void srtfunc() {
     cout << " \nAvg TAT = " << totalTAT / n << endl;
 
 
-    // Visual representation of the FCFS schedule (Gantt chart in text)
-    // https://labex.io/tutorials/cpp-c-program-for-fcfs-scheduling-algorithm-96161
-    cout << "\n================= Gantt Chart =================" << endl;
-    cout << " ";
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < p[i].burstTime; j++) {
-            cout << "--";
+
+    // print the gantt chart:
+	cout << "\nGantt Chart ";
+    int prev = -1, start = 0;
+    for (size_t i = 0; i < gantt.size(); ++i) {
+        if (gantt[i] != prev) {
+            if (prev != -1 && prev != 0) {
+                cout << "(P" << prev << ", " << start << ", " << i << "), ";
+            }
+            start = i;
+            prev = gantt[i];
         }
     }
-    cout << endl << "|";
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < p[i].burstTime - 1; j++) {
-            cout << " ";
-        }
-        cout << "P" << i + 1;
-        for (int j = 0; j < p[i].burstTime - 1; j++) {
-            cout << " ";
-        }
-        cout << "|";
-    }
-
-    cout << endl << " ";
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < p[i].burstTime; j++) {
-            cout << "--";
-        }
-    }
-
-    cout << endl;
-    cout << "0";
-    int current_time = 0;
-    for (int i = 0; i < n; i++) {
-        current_time += p[i].burstTime;
-        for (int j = 0; j < p[i].burstTime * 2 - 1; j++) {
-            cout << " ";
-        }
-        if (current_time < 10) cout << " ";
-        cout << current_time;
+    // Print the last segment
+    if (prev != 0) {
+        cout << "(P" << prev << ", " << start << ", " << gantt.size() << ")";
     }
     cout << endl;
 }
