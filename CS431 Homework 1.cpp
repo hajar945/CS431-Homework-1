@@ -11,7 +11,7 @@ struct Process {
 };
 
 int main() {
-    //srtfunc();
+    srtfunc();
     sjffunc();
     return 0;
 }

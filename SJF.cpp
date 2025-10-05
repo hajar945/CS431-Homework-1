@@ -61,12 +61,13 @@ void sjffunc() {
 
     for (int i = 1; i < n; i++)
     {
+
         ab = p[i - 1].completionTime;
         sort(p.begin() + i, p.begin() + n, compare2);
         if (p[i - 1].completionTime < p[i].arrivalTime)
         {
             p[i].completionTime = p[i - 1].completionTime + p[i].burstTime + (p[i].arrivalTime - p[i - 1].completionTime);
-            
+
         }
         else
         {
@@ -74,41 +75,90 @@ void sjffunc() {
             p[i].completionTime = p[i - 1].completionTime + p[i].burstTime;
 
         }
+       
+
         p[i].turnaroundTime = p[i].completionTime - p[i].arrivalTime;
         p[i].waitingTime = p[i].turnaroundTime - p[i].burstTime;
-        
 
     }
-    // Output the waiting time and turnaround time for each process
-cout << "Process\tWaiting Time\tTurnaround Time";
-        for (int i = 0; i < n; ++i) {
-cout << "\nP" << p[i].id << "\t" << p[i].waitingTime << "\t\t" << p[i].turnaroundTime << " \n";
-        }
-
-        double totalWT = 0, totalTAT = 0;
-        for (auto& proc : p) {
-            totalWT += proc.waitingTime;
-            totalTAT += proc.turnaroundTime;
-            cout << "\nP" << proc.id << " CT " << proc.completionTime << " - AT " << proc.arrivalTime << " = TAT " << proc.turnaroundTime << endl;
-        }
+    
+    // Populate the Gantt chart vector after all calculations are done
+    // The 'p' vector is now sorted in the order of execution.
+     int last_completion_time = 0;
+    for (int i = 0; i < n; ++i) {
+    // The time this process starts is its completion time minus its burst time
+    int start_time = p[i].completionTime - p[i].burstTime;
+       
+    // Check for idle time between the last process and this one
+    if (start_time > last_completion_time) {
+    for (int t = last_completion_time; t < start_time; ++t) {
+    gantt.push_back(0); // 0 represents an idle CPU
+    }
+    }
+    // Add the current process to the gantt chart for its burst duration
+    for (int t = 0; t < p[i].burstTime; ++t) {
+     gantt.push_back(p[i].id);
+    }
+    // Update the time for the next iteration
+    last_completion_time = p[i].completionTime;
+    }
+    
+    double totalWT = 0, totalTAT = 0;for (auto& proc : p) {
+        totalWT += proc.waitingTime;
+        totalTAT += proc.turnaroundTime;
+        cout << "\nP" << proc.id << " CT " << proc.completionTime << " - AT " << proc.arrivalTime << " = TAT " << proc.turnaroundTime << endl;
+   }
         cout << " \nAvg TAT = " << totalTAT / n << endl;
 
-        // print the gantt chart:
-        cout << "\nGantt Chart ";
-        int prev = -1, start = 0;
-        for (size_t i = 0; i < gantt.size(); ++i) {
-            if (gantt[i] != prev) {
-                if (prev != -1 && prev != 0) {
-                    cout << "(P" << prev << ", " << start << ", " << i << "), ";
+        // printing the gantt chart:
+        cout << "\nGantt Chart: ";
+        // First, we must check if the timeline has anything in it. If not, we can't print.
+        if (!gantt.empty()) {
+
+            // We need to keep track of the segment we are currently looking at. A segment has:
+            // 1. A process ID. We start by looking at the process at the very beginning (time 0).
+            int process_id_of_current_segment = gantt[0];
+
+            // 2. A start time. The first segment always starts at time 0.
+            int start_time_of_current_segment = 0;
+
+            // Now, we loop through the entire timeline, starting from the second moment (time 1),
+            // looking for the exact moment the process ID changes.
+            for (int time = 1; time < gantt.size(); ++time) {
+
+                // Is the process at this 'time' DIFFERENT from the one in our current segment?
+                if (gantt[time] != process_id_of_current_segment) {
+
+                    // YES, it's different! This means our segment just ended at the current 'time'.
+                    // So, let's print the segment that just finished.
+                    if (process_id_of_current_segment == 0) {
+                        cout << "(IDLE, " << start_time_of_current_segment << ", " << time << "), ";
+                    }
+                    else {
+                        cout << "(P" << process_id_of_current_segment << ", " << start_time_of_current_segment << ", " << time << "), ";
+                    }
+
+                    // Now, we start tracking the NEW segment.
+                    // The new segment's process is the one at the current 'time'.
+                    process_id_of_current_segment = gantt[time];
+                    // The new segment's start time is the current 'time'.
+                    start_time_of_current_segment = time;
                 }
-                start = i;
-                prev = gantt[i];
+            }
+
+            // The loop above only prints when a process CHANGE occurs.
+            // This means the VERY LAST segment will never be printed by the loop.
+            // We have to print the last segment manually here. Its end time is the total timeline length.
+            if (process_id_of_current_segment == 0) {
+                cout << "(IDLE, " << start_time_of_current_segment << ", " << gantt.size() << ")";
+            }
+            else {
+                cout << "(P" << process_id_of_current_segment << ", " << start_time_of_current_segment << ", " << gantt.size() << ")";
             }
         }
-        // Print the last segment
-        if (prev != 0) {
-            cout << "(P" << prev << ", " << start << ", " << gantt.size() << ")";
-        }
+
         cout << endl;
+
+
 
  }
