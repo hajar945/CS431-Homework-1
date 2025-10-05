@@ -11,28 +11,33 @@ void srtfunc() {
     cout << "\n\nShortest Remaining Time (SRT)\n";
     vector<int> gantt;
 
-    int n = 5, currentTime = 0, completed = 0;
-
+    int n = 5, // num of proccesses, 
+    currentTime = 0, //simulation clock starting at 0
+    completed = 0; //counter of processes finished
+     
     vector<Process> p(n);
 	
 
-    // Only set id, arrivalTime and burstTime
+    // setting pid, arrivalTime and burstTime
     p[0] = {1, 0, 3};
     p[1] = {2, 2, 6};
     p[2] = {3, 4, 4};
     p[3] = {4, 6, 5};
     p[4] = {5, 8, 2};
-    cout << n << " processes are considered" << endl;
-	// set the remainingTime to burstTime at first
+	
+    //loop over each process index and
+    // set its remainingTime equal to burstTime. 
     for (int i = 0; i < n; i++) {
         p[i].remainingTime = p[i].burstTime;
     }
 
-    while (completed < n) {
+    while (completed < n) { //looping until all processes are done
         int idx = -1;
+        //choosing what process to run at currentTime based on:
         for (int i = 0; i < n; i++) {
+            //process has arrived (AT <= currentTime) && remainingTime isn't 0 && (idx is at the last item, or if the process its currently looking at  has less time left to finish than the one already chosen)
             if (p[i].arrivalTime <= currentTime && p[i].remainingTime > 0 && (idx == -1 || p[i].remainingTime < p[idx].remainingTime)) {
-                idx = i;
+                idx = i; // selected process to run is set to currently running process, index i
             }
         }
         if (idx != -1) {

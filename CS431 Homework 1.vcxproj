@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CS431 Homework 1.cpp" />
+    <ClCompile Include="RR.cpp" />
     <ClCompile Include="SJF.cpp" />
     <ClCompile Include="SRT.cpp" />
   </ItemGroup>

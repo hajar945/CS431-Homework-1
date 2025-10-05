@@ -103,12 +103,13 @@ void sjffunc() {
     last_completion_time = p[i].completionTime;
     }
     
-    double totalWT = 0, totalTAT = 0;for (auto& proc : p) {
+    double totalWT = 0, totalTAT = 0;
+    for (auto& proc : p) {
         totalWT += proc.waitingTime;
         totalTAT += proc.turnaroundTime;
-        cout << "\nP" << proc.id << " CT " << proc.completionTime << " - AT " << proc.arrivalTime << " = TAT " << proc.turnaroundTime << endl;
-   }
-        cout << " \nAvg TAT = " << totalTAT / n << endl;
+        cout << "P" << proc.id << " CT " << proc.completionTime << " - AT " << proc.arrivalTime << " = TAT " << proc.turnaroundTime << endl;
+    }
+    cout << " \nAvg TAT = " << totalTAT / n << endl;
 
         // printing the gantt chart:
         cout << "\nGantt Chart: ";

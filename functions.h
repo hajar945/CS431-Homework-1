@@ -4,4 +4,5 @@
 
 void srtfunc();
 void sjffunc();
+void rrfunc();
 #endif
