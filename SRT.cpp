@@ -5,8 +5,12 @@
 using namespace std;
 
 struct Process {
-    int id, arrivalTime, burstTime, remainingTime, waitingTime, turnaroundTime, completionTime;
+    int id, arrivalTime, burstTime, remainingTime, waitingTime, 
+        turnaroundTime, completionTime;
 };
+// Shortest Remaining Time First (SRTF) Scheduling Algorithm
+// https://www.geeksforgeeks.org/dsa/shortest-remaining-time-first-preemptive-sjf-scheduling-algorithm/
+
 void srtfunc() {
     cout << "\n\nShortest Remaining Time (SRT)\n";
     vector<int> gantt;
@@ -25,14 +29,14 @@ void srtfunc() {
     p[3] = {4, 6, 5};
     p[4] = {5, 8, 2};
 	
-    //loop over each process index and
+    // loop over each process index and
     // set its remainingTime equal to burstTime. 
     for (int i = 0; i < n; i++) {
         p[i].remainingTime = p[i].burstTime;
     }
 
     while (completed < n) { //looping until all processes are done
-        int idx = -1;
+		int idx = -1; // index of the process to run at currentTime
         //choosing what process to run at currentTime based on:
         for (int i = 0; i < n; i++) {
             //process has arrived (AT <= currentTime) && remainingTime isn't 0 && (idx is at the last item, or if the process its currently looking at  has less time left to finish than the one already chosen)
@@ -40,11 +44,11 @@ void srtfunc() {
                 idx = i; // selected process to run is set to currently running process, index i
             }
         }
-        if (idx != -1) {
+		if (idx != -1) { // if a process was found to run
             p[idx].remainingTime--;
             gantt.push_back(p[idx].id); // record which process ran
             currentTime++;
-            if (p[idx].remainingTime == 0) {
+			if (p[idx].remainingTime == 0) { // if the process has finished
                 p[idx].completionTime = currentTime;
                 p[idx].turnaroundTime = currentTime - p[idx].arrivalTime;
                 p[idx].waitingTime = p[idx].turnaroundTime - p[idx].burstTime;
@@ -56,7 +60,7 @@ void srtfunc() {
             currentTime++;
         }
     }
-
+	// print the final stats table
     double totalWT = 0, totalTAT = 0;
     for (auto& proc : p) {
         totalWT += proc.waitingTime;
@@ -79,8 +83,8 @@ void srtfunc() {
             prev = gantt[i];
         }
     }
-    // Print the last segment
-    if (prev != 0) {
+    // Print the last segment 
+	if (prev != 0) { // if the last segment is not idle
         cout << "(P" << prev << ", " << start << ", " << gantt.size() << ")";
     }
     cout << endl;

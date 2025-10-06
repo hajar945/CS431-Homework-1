@@ -4,8 +4,6 @@
 #include "functions.h"
 
 using namespace std;
-// Shortest Remaining Time First (SRTF) Scheduling Algorithm
-// https://www.geeksforgeeks.org/dsa/shortest-remaining-time-first-preemptive-sjf-scheduling-algorithm/
 
 int main() {
     sjffunc();
